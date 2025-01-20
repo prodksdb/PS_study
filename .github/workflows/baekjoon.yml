@@ -1,0 +1,21 @@
+name: Baekjoon Auto Commit
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 매일 자정에 실행
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Baekjoon Auto Commit
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        USERNAME: "백준_아이디"
+        PASSWORD: ${{ secrets.BAEKJOON_PASSWORD }}
+      run: |
+        echo "백준 데이터를 GitHub로 업데이트합니다."
