@@ -6,6 +6,8 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 public class Main {
 	
 	static int N;
@@ -49,4 +51,3 @@ public class Main {
 	
 	}
 }
-
