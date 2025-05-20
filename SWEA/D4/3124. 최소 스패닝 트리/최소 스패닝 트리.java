@@ -1,86 +1,98 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
-public class Solution {
+class Solution {
 
-	// 도착 정점, 비용, 다음 노드를 저장하는 그래프 설계도
-	private static class Node implements Comparable<Node> {
-		public int vertex; // 목적지
-		public long weight; // 비용(weight)
+	// 간선 class
+	static class Edge implements Comparable<Edge> {
+		int start;
+		int end;
+		int weight;
 
-		public Node(int vertex, long weight) {
-			this.vertex = vertex;
+		public Edge(int start, int end, int weight) {
+			this.start = start;
+			this.end = end;
 			this.weight = weight;
 		}
 
-		// 오름차순
+		// 가중치 오름차순
 		@Override
-		public int compareTo(Node o) {
-			return Long.compare(this.weight, o.weight);
+		public int compareTo(Edge o) {
+			return this.weight - o.weight;
+		}
+
+	}
+
+	static Edge[] edgeList;
+	static int[] parents;
+	static int V, E;
+
+	static void make() {
+		for (int i = 0; i < V; i++) {
+			parents[i] = i;
 		}
 	}
 
-	private static int V; // 정점의 개수
-	private static int E; // 간선의 개수
+	static int find(int a) {
+		if (parents[a] == a)
+			return a; // 자기 자신이 루트인 경우
+		return parents[a] = find(parents[a]); // 루트 찾아 경로 압축
+	}
+
+	static boolean union(int a, int b) {
+		int aRoot = find(a);
+		int bRoot = find(b);
+
+		if (aRoot == bRoot)
+			return false;
+
+		parents[bRoot] = aRoot;
+		return true;
+	}
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int T = Integer.parseInt(br.readLine());
 		StringBuilder sb = new StringBuilder();
+		int T = Integer.parseInt(br.readLine().trim());
+
 		for (int test_case = 1; test_case <= T; test_case++) {
-			sb.append("#" + test_case + " ");
-			String[] input = br.readLine().trim().split(" ");
-			V = Integer.parseInt(input[0]); // 정점의 개수
-			E = Integer.parseInt(input[1]); // 간선의 개수
-			
-			
-			//정점 i와 연결된 노드들의 리스트 저장, 배열 안에 리스트 저장 
-			//노드 리스트를 저장하는 배열 생성 
-			List<Node> [] adjList = new ArrayList[V+1];
-			for(int i = 1; i <=V; i++) {
-				// 빈 리스트로 초기화 
-				adjList[i] = new ArrayList<>();
-			}
+			StringTokenizer st = new StringTokenizer(br.readLine().trim());
+			V = Integer.parseInt(st.nextToken()); // 정점의 개수
+			E = Integer.parseInt(st.nextToken()); // 간선의 개수
+
+			parents = new int[V];
+			edgeList = new Edge[E];
 
 			for (int i = 0; i < E; i++) {
-				StringTokenizer st = new StringTokenizer(br.readLine());
-				int start = Integer.parseInt(st.nextToken()); // A 시작 정점
-				int end = Integer.parseInt(st.nextToken()); // B 끝 정점
-				int weight = Integer.parseInt(st.nextToken()); // C 가중치 비용
-				
-				// 양방향이므로 A에서 B로 가는 길과 B에서 A로 가는 길을 둘 다 저장!
-				// new Node : 새로운 Node 객체를 만들어서 리스트에 추가하기 위함!
-				adjList[start].add(new Node(end, weight));
-				adjList[end].add(new Node(start, weight));
-			}
-			
-			PriorityQueue<Node> pq = new PriorityQueue <>();
-			boolean [] visited = new boolean[V+1];
+				st = new StringTokenizer(br.readLine().trim());
+				int from = Integer.parseInt(st.nextToken());
+				int to = Integer.parseInt(st.nextToken());
+				int weight = Integer.parseInt(st.nextToken());
 
-			pq.offer(new Node(1,0));
-			
-			long result = 0L; 
-			int count = 0;
-			
-			while(!pq.isEmpty()) {
-				//최소 비용 정점 선택
-				Node current = pq.poll(); 
-				
-				if(visited[current.vertex]) continue; //이미 선택된 정점이면 스킵
-				visited[current.vertex] = true;
-				result += current.weight;
-				if(++count == V) break; //모든 정점을 연결했으면 종료
-				
-				//연결된 간선 탐색 후 우선순위 큐에 추가 
-				for(Node next : adjList[current.vertex]) {
-					if(!visited[next.vertex]) {
-						pq.offer(new Node(next.vertex, next.weight)); //새로운 객체로 추가 
-					}
+				edgeList[i] = new Edge(from - 1, to - 1, weight);
+			}
+
+			make(); // union-find 초기화
+
+			Arrays.sort(edgeList); // 간선을 가중치 오름차순 정렬
+
+			long result = 0; // 최종 비용
+			int count = 0; // 선택된 간선 수
+
+			// 가중치가 낮은 간선부터 순서대로 시도
+			for (Edge edge : edgeList) {
+				if (union(edge.start, edge.end)) {
+					result += edge.weight;
+					count++;
+					if (count == V - 1)
+						break;
 				}
 			}
-			sb.append(result + "\n");
-		}
-		System.out.println(sb.toString());
-	}
 
+			sb.append("#" + test_case + " " + result + "\n");
+		}
+		System.out.println(sb);
+	}
 }
