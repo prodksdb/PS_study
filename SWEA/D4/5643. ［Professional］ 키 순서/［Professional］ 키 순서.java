@@ -3,7 +3,8 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 class Solution {
-	static int N, M;
+	static int N;
+	static int M;
 	static int[][] students;
 
 	public static void main(String[] args) throws Exception {
@@ -14,7 +15,6 @@ class Solution {
 			N = Integer.parseInt(br.readLine());
 			M = Integer.parseInt(br.readLine());
 			students = new int[N + 1][N + 1];
-
 			for (int i = 0; i < M; i++) {
 				StringTokenizer st = new StringTokenizer(br.readLine());
 				int a = Integer.parseInt(st.nextToken());
@@ -41,12 +41,12 @@ class Solution {
 					if (students[i][j] == 1 || students[j][i] == 1) {
 						count++;
 					}
-
 				}
 				if (count == N - 1) {
 					result++;
 				}
 			}
+
 			sb.append("#" + test_case + " " + result + "\n");
 		}
 		System.out.println(sb);
