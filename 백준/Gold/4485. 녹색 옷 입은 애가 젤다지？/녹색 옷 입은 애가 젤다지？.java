@@ -1,0 +1,86 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
+
+class Main {
+	static int N;
+	static int[][] map;
+	static int[][] cost;
+	static int[] dx = { -1, 1, 0, 0 };
+	static int[] dy = { 0, 0, -1, 1 };
+
+	static class Point implements Comparable<Point> {
+		int x;
+		int y;
+		int cost;
+
+		public Point(int x, int y, int cost) {
+			this.x = x;
+			this.y = y;
+			this.cost = cost;
+		}
+
+		@Override
+		public int compareTo(Point o) {
+			return this.cost - o.cost;
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		int index = 0;
+		while (true) {
+			index++;
+			N = Integer.parseInt(br.readLine());
+			if (N == 0)
+				break;
+			map = new int[N][N];
+			cost = new int[N][N];
+
+			for (int i = 0; i < N; i++) {
+				StringTokenizer st = new StringTokenizer(br.readLine());
+				for (int j = 0; j < N; j++) {
+					map[i][j] = Integer.parseInt(st.nextToken());
+				}
+			}
+
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < N; j++) {
+					cost[i][j] = Integer.MAX_VALUE;
+				}
+			}
+
+			int result = bfs();
+			System.out.println("Problem " + index + ": " + result);
+		}
+	}
+
+	static int bfs() {
+		PriorityQueue<Point> pq = new PriorityQueue<>();
+		pq.offer(new Point(0, 0, map[0][0]));
+		cost[0][0] = map[0][0];
+
+		while (!pq.isEmpty()) {
+			Point cur = pq.poll();
+			int cx = cur.x;
+			int cy = cur.y;
+			int cc = cur.cost;
+
+			for (int i = 0; i < 4; i++) {
+				int nx = cx + dx[i];
+				int ny = cy + dy[i];
+				if (nx < 0 || ny < 0 || nx >= N || ny >= N)
+					continue;
+				if (cost[nx][ny] > cost[cx][cy] + map[nx][ny]) {
+					cost[nx][ny] = cost[cx][cy] + map[nx][ny];
+					pq.add(new Point(nx, ny, cost[nx][ny]));
+				}
+			}
+
+		}
+
+		return cost[N - 1][N - 1];
+	}
+}
