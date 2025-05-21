@@ -3,8 +3,8 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 class Solution {
-	static int N;
-	static int M;
+
+	static int N, M;
 	static int[][] students;
 
 	public static void main(String[] args) throws Exception {
@@ -46,7 +46,6 @@ class Solution {
 					result++;
 				}
 			}
-
 			sb.append("#" + test_case + " " + result + "\n");
 		}
 		System.out.println(sb);
