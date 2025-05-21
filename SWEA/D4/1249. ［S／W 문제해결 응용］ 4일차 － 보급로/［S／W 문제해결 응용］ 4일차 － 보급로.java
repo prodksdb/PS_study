@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.PriorityQueue;
 
-public class Solution {
+class Solution {
 
 	static int N;
 	static int[][] map;
@@ -30,12 +30,11 @@ public class Solution {
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb = new StringBuilder();
-		int C = Integer.parseInt(br.readLine());
-		for (int test_case = 1; test_case <= C; test_case++) {
+		int T = Integer.parseInt(br.readLine());
+		for (int test_case = 1; test_case <= T; test_case++) {
 			N = Integer.parseInt(br.readLine());
 			map = new int[N][N];
 			cost = new int[N][N];
-
 			for (int i = 0; i < N; i++) {
 				String line = br.readLine();
 				for (int j = 0; j < N; j++) {
@@ -69,16 +68,17 @@ public class Solution {
 			for (int i = 0; i < 4; i++) {
 				int nx = cx + dx[i];
 				int ny = cy + dy[i];
+
 				if (nx < 0 || ny < 0 || nx >= N || ny >= N) {
 					continue;
 				}
+
 				if (cost[nx][ny] > cost[cx][cy] + map[nx][ny]) {
 					cost[nx][ny] = cost[cx][cy] + map[nx][ny];
 					pq.add(new Point(nx, ny, cost[nx][ny]));
 				}
 			}
 		}
-
-		return cost[N - 1][N - 1];
+		return cost[N-1][N-1];
 	}
 }
